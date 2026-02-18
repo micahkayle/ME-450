@@ -133,12 +133,12 @@ print("C_bar_lam for the laminate:\n", clean(C_bar_lam(C7, theta_list, t_list)))
 theta_list_test = np.array([0, 45, 90, -45]) #degrees
 t_list_test = np.array([0.5, 0.5, 0.5, 0.5])  #mm
 
-print("C_bar_lam for the test case:\n", clean(C_bar_lam(C7, theta_list_test, t_list_test)))
+#print("C_bar_lam for the test case:\n", clean(C_bar_lam(C7, theta_list_test, t_list_test)))
 
 #test case 2
 t_list_test2 = np.array([0.5, 1, 0.5, 1])  #mm
 
-print("C_bar_lam for the test case 2:\n", clean(C_bar_lam(C7, theta_list_test, t_list_test2)))
+#print("C_bar_lam for the test case 2:\n", clean(C_bar_lam(C7, theta_list_test, t_list_test2)))
 
 
 #Problem 8
