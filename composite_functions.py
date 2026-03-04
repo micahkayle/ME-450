@@ -2,19 +2,21 @@ import numpy as np
 from numpy import cos,sin
 import matplotlib.pyplot as plt
 
-def ROM_composite_properties(Ef, vf, Em, vm, Vf):
+def ROM_composite_properties(Ef, nuf, Em, num, Vf):
 
     Vm = 1 - Vf
     
-    Gf = Ef / (2*(1+vf))
-    Gm = Em / (2*(1+vm))
+    Gf = Ef / (2*(1+nuf))
+    Gm = Em / (2*(1+num))
     
     E1 = Ef*Vf + Em*Vm
     E2 = 1 / (Vf/Ef + Vm/Em) #ROM
     
     G12 = 1 / (Vf/Gf + Vm/Gm) #ROM
+
+    G12=1/(Vf/Gf+(1-Vf)/Gm)
     
-    nu12 = vf*Vf + vm*Vm
+    nu12 = nuf*Vf + num*Vm
     nu21 = nu12 * (E2/E1)
     
     den = 1 - nu12*nu21
@@ -34,12 +36,12 @@ def ROM_composite_properties(Ef, vf, Em, vm, Vf):
     
     return C, S
 
-def HalpinTsai_composite_properties(Ef, vf, Em, vm, Vf):
+def HalpinTsai_composite_properties(Ef, nuf, Em, num, Vf):
 
     Vm = 1 - Vf
     
-    Gf = Ef / (2*(1+vf))
-    Gm = Em / (2*(1+vm))
+    Gf = Ef / (2*(1+nuf))
+    Gm = Em / (2*(1+num))
     
     E1 = Ef*Vf + Em*Vm
     xi_E = 2.0
@@ -50,7 +52,7 @@ def HalpinTsai_composite_properties(Ef, vf, Em, vm, Vf):
     eta_G = (Gf/Gm - 1) / (Gf/Gm + xi_G)
     G12 = Gm * (1 + xi_G*eta_G*Vf) / (1 - eta_G*Vf) #Halpin-Tsai
     
-    nu12 = vf*Vf + vm*Vm
+    nu12 = nuf*Vf + num*Vm
     nu21 = nu12 * (E2/E1)
     
     den = 1 - nu12*nu21
@@ -60,15 +62,15 @@ def HalpinTsai_composite_properties(Ef, vf, Em, vm, Vf):
     C12 = nu12 * E2 / den
     C66 = G12
     
-    c = np.array([
+    C = np.array([
         [C11, C12, 0],
         [C12, C22, 0],
         [0,   0,   C66]
     ])
     
-    s = np.linalg.inv(c)
+    S = np.linalg.inv(C)
     
-    return c, s
+    return C, S
 
 
 
