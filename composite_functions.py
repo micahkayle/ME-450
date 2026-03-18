@@ -133,3 +133,55 @@ def tsai_wu_criterion(sigma1t,sigma1c,sigma2t,sigma2c,tau12t,sigma_bar):
 def max_stress_criterion(sigma1t,sigma1c,sigma2t,sigma2c,tau12t,sigma_bar):
     sigma1,sigma2,tau12=sigma_bar
     return (sigma1>=sigma1t) or (sigma1<=-sigma1c) or (sigma2>=sigma2t) or (sigma2<=-sigma2c) or (abs(tau12)>=tau12t)
+
+
+def build_z_list(thicknesses):
+    n = len(thicknesses)
+    z_list = np.zeros(n+1)
+    z_list[0] = -0.5 * np.sum(thicknesses)
+    for k in range(n):
+        z_list[k+1] = z_list[k] + thicknesses[k]
+    
+    return z_list
+
+def A_matrix(C_list, theta_list, z_list):
+    #A matrix for composites
+    n=len(C_list)
+    A = np.zeros((3,3))
+    for k in range(n):
+        A += Cbar(C_list[k], theta_list[k]) * (z_list[k+1] - z_list[k])
+
+    return A
+
+def B_matrix(C_list, theta_list, z_list):
+    #B matrix for composites
+    n=len(C_list)
+    B = np.zeros((3,3))
+    for k in range(n):
+        B += Cbar(C_list[k], theta_list[k]) * (z_list[k+1]**2 - z_list[k]**2) / 2
+
+    return B
+def D_matrix(C_list, theta_list, z_list):
+    #D matrix for composites
+    n=len(C_list)
+    D = np.zeros((3,3))
+    for k in range(n):
+        D += Cbar(C_list[k], theta_list[k]) * (z_list[k+1]**3 - z_list[k]**3) / 3
+
+    return D
+
+
+def CLT(A, B, D):
+    #Classical Laminate Theory
+    ABD = np.block([[A, B], [B, D]])
+    return ABD
+
+def strain_and_curvature(N, M, A, B, D):
+    ABD = np.block([[A, B], [B, D]])
+    NM = np.concatenate((N, M))
+    eps_kappa = np.linalg.solve(ABD, NM)
+    eps0 = eps_kappa[:3]
+    kappa = eps_kappa[3:]
+    return eps0, kappa
+
+
